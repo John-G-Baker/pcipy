@@ -238,18 +238,47 @@ class PiecewiseFilter(LinearFilter):
         #2. Next construct the filters. For this example, we use raw LinearFilter objects, but a practical implementation will use a derived class
         self.subfilters = [ subfilter_class(eval_time=t,**subfilter_kwargs) for t in self.kernel_times]
 
+    # Internally utilized functions
 
-    # Internally ulitized functions
+    def select_kernel_intervals(td, intervduration):
+        """
+        Calculate kernel evaluation times from desired time interval in-between them.
 
-    def select_kernel_times(td,nkern):
-        #define kernel times
+        Parameters
+        ----------
+        td : TimeData object.
+        intervduration : float
+            Time duration of the interval between kernel evaluation in seconds.
 
-        #first define on unit interval
-        unittimes = ( 0.5 + np.arange(nkern) ) / ( nkern )
-        #print(ktimes)
-        #then scale for td
-        ktimes = td.t0 + td.dt * td.n_samples() * unittimes
-        #print(ktimes)
+        Returns
+        -------
+        ktimes : array
+            Array of kernel evaluation times in seconds.
+        """
+        # create array
+        ktimes = np.arange(td.t0 + intervduration/2, td.dt*td.n_samples()+ intervduration/2, intervduration)
+        return ktimes
+
+
+    def select_kernel_times(td, nkern):
+        """
+        Calculate kernel evaluation times from number of kernel evaluations.
+
+        Parameters
+        ----------
+        td : TimeData object.
+        nkern : int
+            Number of desired kernel evaluations.
+
+        Returns
+        -------
+        ktimes : array
+            Array of kernel evaluation times in seconds.
+        """
+        # define time-shift for segment midpoint from number of kernels
+        intervduration = td.dt*td.n_samples()/nkern
+        # create array
+        ktimes = np.linspace(td.t0+intervduration/2, td.dt*td.n_samples()-intervduration/2, nkern)
         return ktimes
 
     def piecewise_linear_apply_filter_set(input_data, filter_set, kernel_times, **filter_kwargs):
