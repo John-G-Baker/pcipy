@@ -4,11 +4,16 @@ PCI is applied directly to the LISA phasemeter measurements.
 
 The LISA phasemeter measurements are the output of simulations built via the [LISA Simulation suite](https://gitlab.in2p3.fr/lisa-simulation).
 
-In what follows we use the following packages from the September LISA Simulation Suite:
-- `lisainstrument >= 1.8` for the overarching instrument simulation,
+In what follows we use the following packages from the November 2025 releases of the LISA Simulation Suite:
+- `lisainstrument >= 1.9` for the overarching instrument simulation,
 - `lisaorbits` for the orbits,
 - `lisagwresponse` for the response to GW,
 - `pytdi` for the evaluation of TDI variables.
+
+```{eval-rst}
+.. note::
+The simulation scripts listed on this page will work with both `lisainstrument v1.9` and `lisainstrument v2.0`. Take into account that `lisainstrument v2.0` does a better job at managing memory when running longer simulations.
+```
 
 In the package we provide three simulation scripts that can be executed in the terminal:
 
