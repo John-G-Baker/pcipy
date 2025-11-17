@@ -278,6 +278,7 @@ class PiecewiseFilter(LinearFilter):
         ktimes = np.arange(td.t0 + intervduration/2, td.dt*td.n_samples()+ intervduration/2, intervduration)
         return ktimes
 
+
     def piecewise_linear_apply_filter_set(input_data, filter_set, kernel_times, **filter_kwargs):
         '''
         This function produces an output channel set, based on the input_data, from a set of input time-domain filters by
