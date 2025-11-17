@@ -77,10 +77,10 @@ class LinearFilter:
         self.nleft = nleft
         if nright is None: nright=nleft
         self.nright=nright
-        self.n_input_channels=n_input_channels
+        self.n_input_channels=n_channels
         self.input_names=input_names
         #Default behavior is mathematically trival, but goes through the motions
-        self.n_output_channels=n_input_channels
+        self.n_output_channels=n_channels
         self.kernel_compts=np.zeros((self.n_output_channels,1+nleft+nright))
         self.kernel_compts[:,nleft]=1
         self.constant_kernel=True
@@ -192,8 +192,6 @@ class PiecewiseFilter(LinearFilter):
         self.constant_kernel=False
         self.dt=self.subfilters[0].dt
 
-
-
     def apply_filter(self, input_data, check=True, method='convolve'):
         '''
         Apply the encoded filter to the input_data.
@@ -240,26 +238,6 @@ class PiecewiseFilter(LinearFilter):
 
     # Internally utilized functions
 
-    def select_kernel_intervals(td, intervduration):
-        """
-        Calculate kernel evaluation times from desired time interval in-between them.
-
-        Parameters
-        ----------
-        td : TimeData object.
-        intervduration : float
-            Time duration of the interval between kernel evaluation in seconds.
-
-        Returns
-        -------
-        ktimes : array
-            Array of kernel evaluation times in seconds.
-        """
-        # create array
-        ktimes = np.arange(td.t0 + intervduration/2, td.dt*td.n_samples()+ intervduration/2, intervduration)
-        return ktimes
-
-
     def select_kernel_times(td, nkern):
         """
         Calculate kernel evaluation times from number of kernel evaluations.
@@ -279,6 +257,25 @@ class PiecewiseFilter(LinearFilter):
         intervduration = td.dt*td.n_samples()/nkern
         # create array
         ktimes = np.linspace(td.t0+intervduration/2, td.dt*td.n_samples()-intervduration/2, nkern)
+        return ktimes
+
+    def select_kernel_intervals(td, intervduration):
+        """
+        Calculate kernel evaluation times from desired time interval in-between them.
+
+        Parameters
+        ----------
+        td : TimeData object.
+        intervduration : float
+            Time duration of the interval between kernel evaluation in seconds.
+
+        Returns
+        -------
+        ktimes : array
+            Array of kernel evaluation times in seconds.
+        """
+        # create array
+        ktimes = np.arange(td.t0 + intervduration/2, td.dt*td.n_samples()+ intervduration/2, intervduration)
         return ktimes
 
     def piecewise_linear_apply_filter_set(input_data, filter_set, kernel_times, **filter_kwargs):
@@ -429,7 +426,7 @@ class RestrictedFilter(LinearFilter):
                 output_name_map.append(np.argmax(locs))
             if 1:
                 print('Output name mapping:')
-                for i in range(len(out_names)):
+                for i in range(len(output_names)):
                     print(str(output_name_map[i])+':'+other.output_names[output_name_map[i]]+' --> '+str(i)+':'+output_names[i])
             self.output_names = output_names
             self.n_output_channels = len(self.output_names)
