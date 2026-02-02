@@ -431,7 +431,7 @@ def get_cpsd_1freq(datamat,tmpL,tmpf,fs,win,olap):
 
     # DFT coefficients
     if isinstance(win, str):
-        winpt = sg.get_window(win, tmpL-1)
+        winpt = sg.get_window(win, tmpL)
     else:
         winpt = win(tmpL) #spectral window
     p = -2j*np.pi*np.arange(0,tmpL,1)/fs;
